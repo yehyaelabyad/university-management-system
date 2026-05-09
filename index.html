@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #1a365d;
+      --primary-light: #2c5282;
+      --primary-lighter: #ebf4ff;
+      --accent: #e53e3e;
+      --accent-light: #fc8181;
+      --success: #38a169;
+      --warning: #d69e2e;
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --text: #2d3748;
+      --text-light: #718096;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 4px 14px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN PAGE ── */
+    .login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    }
+
+    .login-box {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 48px 40px;
+      width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .login-box h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-box .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      transition: border 0.2s;
+      background: #fff;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(44,82,130,0.1);
+    }
+
+    .login-error {
+      color: var(--accent);
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 12px;
+      min-height: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      width: 100%;
+      padding: 12px;
+    }
+
+    .btn-primary:hover { background: var(--primary-light); }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover { background: #2f855a; }
+
+    .btn-danger {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-danger:hover { background: #c53030; }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover { background: #cbd5e0; }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+    }
+
+    /* ── APP LAYOUT ── */
+    .app { display: none; }
+    .app.active { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 250px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .sidebar-header p {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.1); }
+    .nav-item.active { background: rgba(255,255,255,0.15); border-right: 3px solid #fff; }
+
+    .nav-section {
+      padding: 14px 24px 6px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.5;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .user-info {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .user-role {
+      font-size: 11px;
+      opacity: 0.6;
+      text-transform: capitalize;
+    }
+
+    .btn-logout {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 100%;
+      font-size: 12px;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .btn-logout:hover { background: rgba(255,255,255,0.2); }
+
+    .main-content {
+      margin-left: 250px;
+      flex: 1;
+      padding: 32px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .page-header p {
+      color: var(--text-light);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* ── CARDS & TABLES ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--primary-lighter);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    table tr:hover { background: #f8fafc; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-green { background: #c6f6d5; color: #22543d; }
+    .badge-blue { background: #bee3f8; color: #2a4365; }
+    .badge-yellow { background: #fefcbf; color: #744210; }
+    .badge-red { background: #fed7d7; color: #742a2a; }
+
+    .actions { display: flex; gap: 6px; }
+
+    /* ── DASHBOARD STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card .stat-num {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-card .stat-label {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 32px;
+      width: 480px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    /* ── ANNOUNCEMENTS ── */
+    .announcement-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .announcement-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .announcement-card .date {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .announcement-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* ── ROOM BOOKING ── */
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .room-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .room-card h4 { font-size: 15px; margin-bottom: 8px; }
+    .room-card .room-info { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
+
+    /* ── MATERIALS ── */
+    .material-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .material-item .file-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-lighter);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--primary);
+      margin-right: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .filter-bar select, .filter-bar input {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+    }
+
+    /* ── GRADES ── */
+    .grade-course {
+      margin-bottom: 20px;
+    }
+
+    .grade-course h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .feedback-text {
+      font-size: 12px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ LOGIN PAGE ════════════ -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <h1>🎓 University Management System</h1>
+    <p class="subtitle">Sign in with your university credentials</p>
+    <div class="login-error" id="loginError"></div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="e.g. admin@university.edu">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter your password">
+    </div>
+    <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+    <div style="margin-top: 20px; padding: 16px; background: #f7fafc; border-radius: 8px; font-size: 11px; color: var(--text-light);">
+      <strong>Demo Accounts:</strong><br>
+      Admin: admin@university.edu / admin123<br>
+      Professor: prof@university.edu / prof123<br>
+      Student: student@university.edu / student123
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MAIN APP ════════════ -->
+<div class="app" id="appContainer">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🎓 UMS</h2>
+      <p>University Management System</p>
+    </div>
+    <div class="sidebar-nav" id="sidebarNav"></div>
+    <div class="sidebar-footer">
+      <div class="user-info" id="userNameDisplay"></div>
+      <div class="user-role" id="userRoleDisplay"></div>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent"></div>
+</div>
+
+<!-- ════════════ MODAL ════════════ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA STORE (localStorage)
+// ══════════════════════════════════════
+const USERS = [
+  { email: 'admin@university.edu', password: 'admin123', name: 'Ahmed Hassan', role: 'admin' },
+  { email: 'prof@university.edu', password: 'prof123', name: 'Dr. Mona Khalil', role: 'professor' },
+  { email: 'student@university.edu', password: 'student123', name: 'Youssef Ali', role: 'student' },
+  { email: 'prof2@university.edu', password: 'prof123', name: 'Dr. Omar Farid', role: 'professor' },
+  { email: 'student2@university.edu', password: 'student123', name: 'Sara Ahmed', role: 'student' }
+];
+
+function getStore(key, fallback) {
+  const d = localStorage.getItem('ums_' + key);
+  return d ? JSON.parse(d) : fallback;
+}
+function setStore(key, val) {
+  localStorage.setItem('ums_' + key, JSON.stringify(val));
+}
+
+// Initialize default data
+function initData() {
+  if (!getStore('initialized', false)) {
+    setStore('rooms', [
+      { id: 1, name: 'Room A101', type: 'Classroom', capacity: 40 },
+      { id: 2, name: 'Room B202', type: 'Classroom', capacity: 30 },
+      { id: 3, name: 'Lab C301', type: 'Laboratory', capacity: 25 },
+      { id: 4, name: 'Lab D102', type: 'Laboratory', capacity: 20 },
+      { id: 5, name: 'Hall E501', type: 'Lecture Hall', capacity: 120 }
+    ]);
+    setStore('bookings', [
+      { id: 1, roomId: 1, roomName: 'Room A101', professor: 'Dr. Mona Khalil', date: '2026-04-20', time: '09:00', purpose: 'CS101 Lecture' },
+      { id: 2, roomId: 3, roomName: 'Lab C301', professor: 'Dr. Omar Farid', date: '2026-04-20', time: '14:00', purpose: 'Physics Lab' }
+    ]);
+    setStore('students', [
+      { id: 1, studentId: 'STU001', name: 'Youssef Ali', program: 'Computer Engineering', email: 'youssef@university.edu', phone: '0101234567' },
+      { id: 2, studentId: 'STU002', name: 'Sara Ahmed', program: 'Computer Science', email: 'sara@university.edu', phone: '0109876543' },
+      { id: 3, studentId: 'STU003', name: 'Mohamed Tarek', program: 'Information Systems', email: 'mohamed@university.edu', phone: '0112345678' }
+    ]);
+    setStore('courses', [
+      { id: 1, code: 'CS101', name: 'Introduction to Programming', type: 'Core', credits: 3, department: 'CS' },
+      { id: 2, code: 'CS201', name: 'Data Structures', type: 'Core', credits: 3, department: 'CS' },
+      { id: 3, code: 'CS301', name: 'Artificial Intelligence', type: 'Elective', credits: 3, department: 'CS' },
+      { id: 4, code: 'CS302', name: 'Web Development', type: 'Elective', credits: 3, department: 'CS' },
+      { id: 5, code: 'MATH101', name: 'Calculus I', type: 'Core', credits: 4, department: 'Math' },
+      { id: 6, code: 'ENG201', name: 'Technical Writing', type: 'Elective', credits: 2, department: 'English' }
+    ]);
+    setStore('registrations', [
+      { studentEmail: 'student@university.edu', courseId: 1 },
+      { studentEmail: 'student@university.edu', courseId: 2 },
+      { studentEmail: 'student@university.edu', courseId: 5 }
+    ]);
+    setStore('materials', [
+      { id: 1, courseId: 1, name: 'Week 1 - Intro to Python.pdf', professor: 'Dr. Mona Khalil', date: '2026-04-10', type: 'PDF' },
+      { id: 2, courseId: 1, name: 'Assignment 1.docx', professor: 'Dr. Mona Khalil', date: '2026-04-12', type: 'DOCX' },
+      { id: 3, courseId: 2, name: 'Linked Lists Notes.pdf', professor: 'Dr. Omar Farid', date: '2026-04-14', type: 'PDF' }
+    ]);
+    setStore('grades', [
+      { studentEmail: 'student@university.edu', courseId: 1, courseName: 'Introduction to Programming', assessments: [
+        { name: 'Quiz 1', grade: 18, max: 20, feedback: 'Great work! Watch out for edge cases.' },
+        { name: 'Assignment 1', grade: 42, max: 50, feedback: 'Good solution but could optimize the loop.' },
+        { name: 'Midterm', grade: 35, max: 40, feedback: '' }
+      ]},
+      { studentEmail: 'student@university.edu', courseId: 2, courseName: 'Data Structures', assessments: [
+        { name: 'Quiz 1', grade: 15, max: 20, feedback: 'Review linked list traversal.' },
+        { name: 'Lab 1', grade: 28, max: 30, feedback: '' }
+      ]}
+    ]);
+    setStore('staff', [
+      { id: 1, name: 'Dr. Mona Khalil', role: 'Professor', email: 'mona@university.edu', officeHours: 'Mon, Wed 10-12', courses: 'CS101, CS302' },
+      { id: 2, name: 'Dr. Omar Farid', role: 'Professor', email: 'omar@university.edu', officeHours: 'Tue, Thu 14-16', courses: 'CS201, CS301' },
+      { id: 3, name: 'Eng. Layla Nasser', role: 'TA', email: 'layla@university.edu', officeHours: 'Wed 13-15', courses: 'CS101' },
+      { id: 4, name: 'Eng. Khaled Mostafa', role: 'TA', email: 'khaled@university.edu', officeHours: 'Sun, Tue 10-12', courses: 'CS201, MATH101' }
+    ]);
+    setStore('announcements', [
+      { id: 1, title: 'Spring 2026 Registration Now Open', body: 'Students can now register for Spring 2026 elective courses through the course catalog. Registration closes on April 25th. Please consult with your academic advisor before selecting your courses.', date: '2026-04-10' },
+      { id: 2, title: 'Campus Maintenance Notice', body: 'Building B will undergo scheduled maintenance on April 22-23. All classes in Building B will be relocated to Building D. Please check the room booking system for updated room assignments.', date: '2026-04-12' },
+      { id: 3, title: 'Midterm Exam Schedule Published', body: 'The midterm examination schedule for all departments has been published. Students can view their exam dates and rooms through the system. Contact your department for any conflicts.', date: '2026-04-14' }
+    ]);
+    setStore('initialized', true);
+  }
+}
+
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+let currentUser = null;
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const user = USERS.find(u => u.email === email && u.password === pass);
+
+  if (!user) {
+    document.getElementById('loginError').textContent = 'Invalid email or password. Please try again.';
+    return;
+  }
+
+  currentUser = user;
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('appContainer').classList.add('active');
+  document.getElementById('userNameDisplay').textContent = user.name;
+  document.getElementById('userRoleDisplay').textContent = user.role;
+  buildSidebar();
+}
+
+function handleLogout() {
+  currentUser = null;
+  document.getElementById('appContainer').classList.remove('active');
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+const NAV_CONFIG = {
+  admin: [
+    { section: 'General' },
+    { id: 'dashboard', label: '📊 Dashboard', render: renderDashboard },
+    { id: 'announcements', label: '📢 Announcements', render: renderAnnouncementsAdmin },
+    { section: 'Facilities' },
+    { id: 'rooms', label: '🏫 Manage Rooms', render: renderRooms },
+    { id: 'students', label: '🎓 Student Records', render: renderStudents },
+    { section: 'Curriculum' },
+    { id: 'courses', label: '📚 Course Catalog', render: (el) => renderCoursesAdmin(el) },
+    { section: 'Staff' },
+    { id: 'staffdir', label: '👥 Staff Directory', render: renderStaffAdmin }
+  ],
+  professor: [
+    { section: 'General' },
+    { id: 'dashboard', label: '📊 Dashboard', render: renderDashboard },
+    { id: 'announcements', label: '📢 Announcements', render: renderAnnouncementsView },
+    { section: 'Facilities' },
+    { id: 'booking', label: '🏫 Book a Room', render: renderBooking },
+    { section: 'Curriculum' },
+    { id: 'materials', label: '📎 Upload Materials', render: renderMaterials },
+    { section: 'Staff' },
+    { id: 'staffdir', label: '👥 Staff Directory', render: renderStaffView }
+  ],
+  student: [
+    { section: 'General' },
+    { id: 'dashboard', label: '📊 Dashboard', render: renderDashboard },
+    { id: 'announcements', label: '📢 Announcements', render: renderAnnouncementsView },
+    { section: 'Curriculum' },
+    { id: 'browsecourses', label: '📚 Browse Courses', render: (el) => renderBrowseCourses(el) },
+    { id: 'grades', label: '📝 My Grades', render: renderGrades },
+    { section: 'Staff' },
+    { id: 'staffdir', label: '👥 Staff Directory', render: renderStaffView }
+  ]
+};
+
+let currentPage = null;
+
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  const items = NAV_CONFIG[currentUser.role];
+  nav.innerHTML = '';
+
+  items.forEach(item => {
+    if (item.section) {
+      nav.innerHTML += `<div class="nav-section">${item.section}</div>`;
+    } else {
+      nav.innerHTML += `<div class="nav-item" data-page="${item.id}" onclick="navigateTo('${item.id}')">${item.label}</div>`;
+    }
+  });
+
+  navigateTo('dashboard');
+}
+
+function navigateTo(pageId) {
+  currentPage = pageId;
+  const items = NAV_CONFIG[currentUser.role];
+  const item = items.find(i => i.id === pageId);
+  if (!item) return;
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
+
+  const main = document.getElementById('mainContent');
+  item.render(main);
+}
+
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+function openModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ══════════════════════════════════════
+// DASHBOARD (US-18: role-based view)
+// ══════════════════════════════════════
+function renderDashboard(el) {
+  const rooms = getStore('rooms', []);
+  const students = getStore('students', []);
+  const courses = getStore('courses', []);
+  const staff = getStore('staff', []);
+  const anns = getStore('announcements', []);
+
+  let stats = '';
+  if (currentUser.role === 'admin') {
+    stats = `
+      <div class="stat-card"><div class="stat-num">${rooms.length}</div><div class="stat-label">Rooms</div></div>
+      <div class="stat-card"><div class="stat-num">${students.length}</div><div class="stat-label">Students</div></div>
+      <div class="stat-card"><div class="stat-num">${courses.length}</div><div class="stat-label">Courses</div></div>
+      <div class="stat-card"><div class="stat-num">${staff.length}</div><div class="stat-label">Staff Members</div></div>
+    `;
+  } else if (currentUser.role === 'professor') {
+    const myMaterials = getStore('materials', []).filter(m => m.professor === currentUser.name);
+    const myBookings = getStore('bookings', []).filter(b => b.professor === currentUser.name);
+    stats = `
+      <div class="stat-card"><div class="stat-num">${myBookings.length}</div><div class="stat-label">My Bookings</div></div>
+      <div class="stat-card"><div class="stat-num">${myMaterials.length}</div><div class="stat-label">Materials Uploaded</div></div>
+      <div class="stat-card"><div class="stat-num">${courses.length}</div><div class="stat-label">Total Courses</div></div>
+    `;
+  } else {
+    const regs = getStore('registrations', []).filter(r => r.studentEmail === currentUser.email);
+    const myGrades = getStore('grades', []).filter(g => g.studentEmail === currentUser.email);
+    stats = `
+      <div class="stat-card"><div class="stat-num">${regs.length}</div><div class="stat-label">Enrolled Courses</div></div>
+      <div class="stat-card"><div class="stat-num">${myGrades.length}</div><div class="stat-label">Courses with Grades</div></div>
+      <div class="stat-card"><div class="stat-num">${anns.length}</div><div class="stat-label">Announcements</div></div>
+    `;
+  }
+
+  const latestAnns = anns.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 2);
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Welcome, ${currentUser.name}</h1>
+      <p>You are logged in as <strong>${currentUser.role}</strong></p>
+    </div>
+    <div class="stats-grid">${stats}</div>
+    <div class="card">
+      <div class="card-header"><h3>Latest Announcements</h3></div>
+      ${latestAnns.map(a => `
+        <div class="announcement-card">
+          <h4>${a.title}</h4>
+          <div class="date">${a.date}</div>
+          <p>${a.body}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════
+// US-01: MANAGE ROOMS (Admin CRUD)
+// ══════════════════════════════════════
+function renderRooms(el) {
+  const rooms = getStore('rooms', []);
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Manage Rooms</h1>
+      <p>Add, edit, and delete classroom and lab records</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>All Rooms (${rooms.length})</h3>
+        <button class="btn btn-success btn-sm" onclick="openRoomModal()">+ Add Room</button>
+      </div>
+      <table>
+        <tr><th>Name</th><th>Type</th><th>Capacity</th><th>Actions</th></tr>
+        ${rooms.map(r => `
+          <tr>
+            <td><strong>${r.name}</strong></td>
+            <td><span class="badge ${r.type === 'Laboratory' ? 'badge-blue' : r.type === 'Lecture Hall' ? 'badge-yellow' : 'badge-green'}">${r.type}</span></td>
+            <td>${r.capacity} seats</td>
+            <td class="actions">
+              <button class="btn btn-secondary btn-sm" onclick="openRoomModal(${r.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteRoom(${r.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('')}
+      </table>
+      ${rooms.length === 0 ? '<div class="empty-state">No rooms added yet.</div>' : ''}
+    </div>
+  `;
+}
+
+function openRoomModal(id) {
+  const rooms = getStore('rooms', []);
+  const room = id ? rooms.find(r => r.id === id) : null;
+  openModal(`
+    <h2>${room ? 'Edit Room' : 'Add New Room'}</h2>
+    <div class="form-group">
+      <label>Room Name</label>
+      <input id="roomName" value="${room ? room.name : ''}" placeholder="e.g. Room A101">
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="roomType">
+        <option value="Classroom" ${room && room.type === 'Classroom' ? 'selected' : ''}>Classroom</option>
+        <option value="Laboratory" ${room && room.type === 'Laboratory' ? 'selected' : ''}>Laboratory</option>
+        <option value="Lecture Hall" ${room && room.type === 'Lecture Hall' ? 'selected' : ''}>Lecture Hall</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Capacity</label>
+      <input type="number" id="roomCapacity" value="${room ? room.capacity : ''}" placeholder="e.g. 40">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" onclick="saveRoom(${id || 0})">Save</button>
+    </div>
+  `);
+}
+
+function saveRoom(id) {
+  const rooms = getStore('rooms', []);
+  const name = document.getElementById('roomName').value.trim();
+  const type = document.getElementById('roomType').value;
+  const capacity = parseInt(document.getElementById('roomCapacity').value);
+
+  if (!name || !capacity) return alert('Please fill in all fields.');
+
+  if (id) {
+    const idx = rooms.findIndex(r => r.id === id);
+    rooms[idx] = { ...rooms[idx], name, type, capacity };
+  } else {
+    rooms.push({ id: Date.now(), name, type, capacity });
+  }
+
+  setStore('rooms', rooms);
+  closeModal();
+  renderRooms(document.getElementById('mainContent'));
+}
+
+function deleteRoom(id) {
+  if (!confirm('Are you sure you want to delete this room? This action cannot be undone.')) return;
+  const rooms = getStore('rooms', []).filter(r => r.id !== id);
+  setStore('rooms', rooms);
+  renderRooms(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════
+// US-02: BOOK ROOMS (Professor)
+// ══════════════════════════════════════
+function renderBooking(el) {
+  const rooms = getStore('rooms', []);
+  const bookings = getStore('bookings', []);
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Book a Room</h1>
+      <p>View availability and reserve a classroom</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>My Bookings</h3></div>
+      <table>
+        <tr><th>Room</th><th>Date</th><th>Time</th><th>Purpose</th></tr>
+        ${bookings.filter(b => b.professor === currentUser.name).map(b => `
+          <tr><td>${b.roomName}</td><td>${b.date}</td><td>${b.time}</td><td>${b.purpose}</td></tr>
+        `).join('')}
+      </table>
+      ${bookings.filter(b => b.professor === currentUser.name).length === 0 ? '<div class="empty-state">No bookings yet.</div>' : ''}
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Available Rooms</h3></div>
+      <div class="filter-bar">
+        <label>Date:</label>
+        <input type="date" id="filterDate" value="2026-04-21">
+        <label>Time:</label>
+        <select id="filterTime">
+          <option value="08:00">08:00</option>
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="filterRooms()">Check Availability</button>
+      </div>
+      <div class="room-grid" id="availableRooms">
+        ${rooms.map(r => `
+          <div class="room-card">
+            <h4>${r.name}</h4>
+            <div class="room-info">${r.type} · ${r.capacity} seats</div>
+            <button class="btn btn-success btn-sm" onclick="bookRoom(${r.id}, '${r.name}')">Book This Room</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function filterRooms() {
+  const date = document.getElementById('filterDate').value;
+  const time = document.getElementById('filterTime').value;
+  const rooms = getStore('rooms', []);
+  const bookings = getStore('bookings', []);
+  const booked = bookings.filter(b => b.date === date && b.time === time).map(b => b.roomId);
+  const available = rooms.filter(r => !booked.includes(r.id));
+
+  document.getElementById('availableRooms').innerHTML = available.length === 0
+    ? '<div class="empty-state">No rooms available at this date and time.</div>'
+    : available.map(r => `
+      <div class="room-card">
+        <h4>${r.name}</h4>
+        <div class="room-info">${r.type} · ${r.capacity} seats</div>
+        <button class="btn btn-success btn-sm" onclick="bookRoom(${r.id}, '${r.name}')">Book This Room</button>
+      </div>
+    `).join('');
+}
+
+function bookRoom(roomId, roomName) {
+  const date = document.getElementById('filterDate').value;
+  const time = document.getElementById('filterTime').value;
+  const bookings = getStore('bookings', []);
+
+  if (bookings.find(b => b.roomId === roomId && b.date === date && b.time === time)) {
+    return alert('This room is already booked at the selected date and time. Double-booking is not allowed.');
+  }
+
+  const purpose = prompt('Enter the purpose of booking (e.g., CS101 Lecture):');
+  if (!purpose) return;
+
+  bookings.push({ id: Date.now(), roomId, roomName, professor: currentUser.name, date, time, purpose });
+  setStore('bookings', bookings);
+  alert('Room booked successfully!');
+  renderBooking(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════
+// US-04: STUDENT RECORDS (Admin CRUD)
+// ══════════════════════════════════════
+function renderStudents(el) {
+  const students = getStore('students', []);
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Student Records</h1>
+      <p>Manage student information</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>All Students (${students.length})</h3>
+        <button class="btn btn-success btn-sm" onclick="openStudentModal()">+ Add Student</button>
+      </div>
+      <div class="filter-bar">
+        <input type="text" id="studentSearch" placeholder="Search by name or ID..." oninput="searchStudents()">
+      </div>
+      <table id="studentsTable">
+        <tr><th>Student ID</th><th>Name</th><th>Program</th><th>Email</th><th>Actions</th></tr>
+        ${students.map(s => `
+          <tr>
+            <td><strong>${s.studentId}</strong></td>
+            <td>${s.name}</td>
+            <td><span class="badge badge-blue">${s.program}</span></td>
+            <td>${s.email}</td>
+            <td class="actions">
+              <button class="btn btn-secondary btn-sm" onclick="openStudentModal(${s.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('')}
+      </table>
+    </div>
+  `;
+}
+
+function searchStudents() {
+  const q = document.getElementById('studentSearch').value.toLowerCase();
+  const students = getStore('students', []);
+  const filtered = students.filter(s => s.name.toLowerCase().includes(q) || s.studentId.toLowerCase().includes(q));
+  const tbody = document.getElementById('studentsTable');
+  tbody.innerHTML = `
+    <tr><th>Student ID</th><th>Name</th><th>Program</th><th>Email</th><th>Actions</th></tr>
+    ${filtered.map(s => `
+      <tr>
+        <td><strong>${s.studentId}</strong></td>
+        <td>${s.name}</td>
+        <td><span class="badge badge-blue">${s.program}</span></td>
+        <td>${s.email}</td>
+        <td class="actions">
+          <button class="btn btn-secondary btn-sm" onclick="openStudentModal(${s.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})">Delete</button>
+        </td>
+      </tr>
+    `).join('')}
+  `;
+}
+
+function openStudentModal(id) {
+  const students = getStore('students', []);
+  const s = id ? students.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${s ? 'Edit Student' : 'Add New Student'}</h2>
+    <div class="form-group">
+      <label>Student ID</label>
+      <input id="stuId" value="${s ? s.studentId : ''}" placeholder="e.g. STU004">
+    </div>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input id="stuName" value="${s ? s.name : ''}" placeholder="e.g. Ahmed Ali">
+    </div>
+    <div class="form-group">
+      <label>Program</label>
+      <select id="stuProgram">
+        <option ${s && s.program === 'Computer Engineering' ? 'selected' : ''}>Computer Engineering</option>
+        <option ${s && s.program === 'Computer Science' ? 'selected' : ''}>Computer Science</option>
+        <option ${s && s.program === 'Information Systems' ? 'selected' : ''}>Information Systems</option>
+        <option ${s && s.program === 'Electrical Engineering' ? 'selected' : ''}>Electrical Engineering</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input id="stuEmail" value="${s ? s.email : ''}" placeholder="e.g. ahmed@university.edu">
+    </div>
+    <div class="form-group">
+      <label>Phone</label>
+      <input id="stuPhone" value="${s ? s.phone : ''}" placeholder="e.g. 0101234567">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" onclick="saveStudent(${id || 0})">Save</button>
+    </div>
+  `);
+}
+
+function saveStudent(id) {
+  const students = getStore('students', []);
+  const data = {
+    studentId: document.getElementById('stuId').value.trim(),
+    name: document.getElementById('stuName').value.trim(),
+    program: document.getElementById('stuProgram').value,
+    email: document.getElementById('stuEmail').value.trim(),
+    phone: document.getElementById('stuPhone').value.trim()
+  };
+
+  if (!data.studentId || !data.name) return alert('Please fill in required fields.');
+
+  if (id) {
+    const idx = students.findIndex(s => s.id === id);
+    students[idx] = { ...students[idx], ...data };
+  } else {
+    students.push({ id: Date.now(), ...data });
+  }
+
+  setStore('students', students);
+  closeModal();
+  renderStudents(document.getElementById('mainContent'));
+}
+
+function deleteStudent(id) {
+  if (!confirm('Are you sure you want to delete this student record? This action cannot be undone.')) return;
+  setStore('students', getStore('students', []).filter(s => s.id !== id));
+  renderStudents(document.getElementById('mainContent'));
+}
+// ══════════════════════════════════════
+// US-08: UPLOAD MATERIALS (Professor)
+// ══════════════════════════════════════
+function renderMaterials(el) {
+  const courses = getStore('courses', []);
+  const materials = getStore('materials', []);
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Course Materials</h1>
+      <p>Upload assignments and course materials for students</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>Upload New Material</h3>
+      </div>
+      <div class="form-group">
+        <label>Select Course</label>
+        <select id="matCourse">
+          ${courses.map(c => `<option value="${c.id}">${c.code} - ${c.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>File Name</label>
+        <input id="matName" placeholder="e.g. Week 3 - Arrays.pdf">
+      </div>
+      <div class="form-group">
+        <label>File Type</label>
+        <select id="matType">
+          <option value="PDF">PDF</option>
+          <option value="DOCX">DOCX</option>
+          <option value="PPTX">PPTX</option>
+          <option value="ZIP">ZIP</option>
+        </select>
+      </div>
+      <button class="btn btn-success" onclick="uploadMaterial()">Upload Material</button>
+    </div>
+    ${courses.map(c => {
+      const cm = materials.filter(m => m.courseId === c.id);
+      if (cm.length === 0) return '';
+      return `
+        <div class="card">
+          <div class="card-header"><h3>${c.code} - ${c.name}</h3></div>
+          ${cm.map(m => `
+            <div class="material-item">
+              <div style="display:flex;align-items:center">
+                <div class="file-icon">📄</div>
+                <div>
+                  <strong style="font-size:13px">${m.name}</strong>
+                  <div style="font-size:11px;color:var(--text-light)">Uploaded by ${m.professor} on ${m.date}</div>
+                </div>
+              </div>
+              <span class="badge badge-blue">${m.type}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function uploadMaterial() {
+  const courseId = parseInt(document.getElementById('matCourse').value);
+  const name = document.getElementById('matName').value.trim();
+  const type = document.getElementById('matType').value;
+
+  if (!name) return alert('Please enter a file name.');
+
+  const materials = getStore('materials', []);
+  materials.push({
+    id: Date.now(),
+    courseId,
+    name,
+    professor: currentUser.name,
+    date: new Date().toISOString().split('T')[0],
+    type
+  });
+  setStore('materials', materials);
+  alert('Material uploaded successfully! Students enrolled in this course can now view it.');
+  renderMaterials(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════
+// US-10: VIEW GRADES (Student)
+// ══════════════════════════════════════
+function renderGrades(el) {
+  const grades = getStore('grades', []).filter(g => g.studentEmail === currentUser.email);
+
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>My Grades</h1>
+      <p>View your grades and feedback for each course</p>
+    </div>
+    ${grades.length === 0 ? '<div class="card"><div class="empty-state">No grades available yet.</div></div>' : ''}
+    ${grades.map(g => `
+      <div class="card grade-course">
+        <div class="card-header"><h3>${g.courseName}</h3></div>
+        <table>
+          <tr><th>Assessment</th><th>Grade</th><th>Max</th><th>Percentage</th><th>Feedback</th></tr>
+          ${g.assessments.map(a => `
+            <tr>
+              <td>${a.name}</td>
+              <td><strong>${a.grade}</strong></td>
+              <td>${a.max}</td>
+              <td><span class="badge ${(a.grade/a.max*100) >= 80 ? 'badge-green' : (a.grade/a.max*100) >= 60 ? 'badge-yellow' : 'badge-red'}">${Math.round(a.grade/a.max*100)}%</span></td>
+              <td>${a.feedback ? `<span class="feedback-text">"${a.feedback}"</span>` : '<span style="color:var(--text-light);font-size:12px">—</span>'}</td>
+            </tr>
+          `).join('')}
+        </table>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ══════════════════════════════════════
+// US-11: STAFF DIRECTORY (Admin CRUD + All view)
+// ══════════════════════════════════════
+function renderStaffAdmin(el) {
+  const staff = getStore('staff', []);
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Staff Directory</h1>
+      <p>Manage professors, TAs, and their information</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>All Staff (${staff.length})</h3>
+        <button class="btn btn-success btn-sm" onclick="openStaffModal()">+ Add Staff</button>
+      </div>
+      <table>
+        <tr><th>Name</th><th>Role</th><th>Email</th><th>Office Hours</th><th>Courses</th><th>Actions</th></tr>
+        ${staff.map(s => `
+          <tr>
+            <td><strong>${s.name}</strong></td>
+            <td><span class="badge ${s.role === 'Professor' ? 'badge-blue' : 'badge-green'}">${s.role}</span></td>
+            <td>${s.email}</td>
+            <td>${s.officeHours}</td>
+            <td>${s.courses}</td>
+            <td class="actions">
+              <button class="btn btn-secondary btn-sm" onclick="openStaffModal(${s.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStaff(${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('')}
+      </table>
+    </div>
+  `;
+}
+
+function renderStaffView(el) {
+  const staff = getStore('staff', []);
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Staff Directory</h1>
+      <p>Find professors and TAs</p>
+    </div>
+    <div class="card">
+      <div class="filter-bar">
+        <input type="text" id="staffSearch" placeholder="Search by name, role, or course..." oninput="searchStaff()">
+      </div>
+      <table id="staffTable">
+        <tr><th>Name</th><th>Role</th><th>Email</th><th>Office Hours</th><th>Courses</th></tr>
+        ${staff.map(s => `
+          <tr>
+            <td><strong>${s.name}</strong></td>
+            <td><span class="badge ${s.role === 'Professor' ? 'badge-blue' : 'badge-green'}">${s.role}</span></td>
+            <td>${s.email}</td>
+            <td>${s.officeHours}</td>
+            <td>${s.courses}</td>
+          </tr>
+        `).join('')}
+      </table>
+    </div>
+  `;
+}
+
+function searchStaff() {
+  const q = document.getElementById('staffSearch').value.toLowerCase();
+  const staff = getStore('staff', []).filter(s =>
+    s.name.toLowerCase().includes(q) || s.role.toLowerCase().includes(q) || s.courses.toLowerCase().includes(q)
+  );
+  document.getElementById('staffTable').innerHTML = `
+    <tr><th>Name</th><th>Role</th><th>Email</th><th>Office Hours</th><th>Courses</th></tr>
+    ${staff.map(s => `
+      <tr>
+        <td><strong>${s.name}</strong></td>
+        <td><span class="badge ${s.role === 'Professor' ? 'badge-blue' : 'badge-green'}">${s.role}</span></td>
+        <td>${s.email}</td>
+        <td>${s.officeHours}</td>
+        <td>${s.courses}</td>
+      </tr>
+    `).join('')}
+  `;
+}
+
+function openStaffModal(id) {
+  const staff = getStore('staff', []);
+  const s = id ? staff.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${s ? 'Edit Staff' : 'Add Staff Member'}</h2>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input id="sfName" value="${s ? s.name : ''}" placeholder="e.g. Dr. Ali Hassan">
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="sfRole">
+        <option value="Professor" ${s && s.role === 'Professor' ? 'selected' : ''}>Professor</option>
+        <option value="TA" ${s && s.role === 'TA' ? 'selected' : ''}>Teaching Assistant</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input id="sfEmail" value="${s ? s.email : ''}" placeholder="e.g. ali@university.edu">
+    </div>
+    <div class="form-group">
+      <label>Office Hours</label>
+      <input id="sfHours" value="${s ? s.officeHours : ''}" placeholder="e.g. Mon, Wed 10-12">
+    </div>
+    <div class="form-group">
+      <label>Assigned Courses</label>
+      <input id="sfCourses" value="${s ? s.courses : ''}" placeholder="e.g. CS101, CS201">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" onclick="saveStaff(${id || 0})">Save</button>
+    </div>
+  `);
+}
+
+function saveStaff(id) {
+  const staff = getStore('staff', []);
+  const data = {
+    name: document.getElementById('sfName').value.trim(),
+    role: document.getElementById('sfRole').value,
+    email: document.getElementById('sfEmail').value.trim(),
+    officeHours: document.getElementById('sfHours').value.trim(),
+    courses: document.getElementById('sfCourses').value.trim()
+  };
+
+  if (!data.name || !data.email) return alert('Please fill in required fields.');
+
+  if (id) {
+    const idx = staff.findIndex(s => s.id === id);
+    staff[idx] = { ...staff[idx], ...data };
+  } else {
+    staff.push({ id: Date.now(), ...data });
+  }
+
+  setStore('staff', staff);
+  closeModal();
+  renderStaffAdmin(document.getElementById('mainContent'));
+}
+
+function deleteStaff(id) {
+  if (!confirm('Remove this staff member from the directory?')) return;
+  setStore('staff', getStore('staff', []).filter(s => s.id !== id));
+  renderStaffAdmin(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════
+// US-17: ANNOUNCEMENTS (Admin create + All view)
+// ══════════════════════════════════════
+function renderAnnouncementsAdmin(el) {
+  const anns = getStore('announcements', []).sort((a, b) => b.date.localeCompare(a.date));
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Announcements</h1>
+      <p>Post and manage university-wide announcements</p>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Post New Announcement</h3></div>
+      <div class="form-group">
+        <label>Title</label>
+        <input id="annTitle" placeholder="e.g. Final Exam Schedule">
+      </div>
+      <div class="form-group">
+        <label>Body</label>
+        <textarea id="annBody" rows="4" placeholder="Write the announcement content..."></textarea>
+      </div>
+      <button class="btn btn-success" onclick="postAnnouncement()">Post Announcement</button>
+    </div>
+    <h3 style="margin-bottom:12px">All Announcements (${anns.length})</h3>
+    ${anns.map(a => `
+      <div class="announcement-card">
+        <h4>${a.title}</h4>
+        <div class="date">${a.date}</div>
+        <p>${a.body}</p>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderAnnouncementsView(el) {
+  const anns = getStore('announcements', []).sort((a, b) => b.date.localeCompare(a.date));
+  el.innerHTML = `
+    <div class="page-header">
+      <h1>Announcements</h1>
+      <p>University-wide announcements and updates</p>
+    </div>
+    ${anns.map(a => `
+      <div class="announcement-card">
+        <h4>${a.title}</h4>
+        <div class="date">${a.date}</div>
+        <p>${a.body}</p>
+      </div>
+    `).join('')}
+    ${anns.length === 0 ? '<div class="card"><div class="empty-state">No announcements yet.</div></div>' : ''}
+  `;
+}
+
+function postAnnouncement() {
+  const title = document.getElementById('annTitle').value.trim();
+  const body = document.getElementById('annBody').value.trim();
+  if (!title || !body) return alert('Please fill in both title and body.');
+
+  const anns = getStore('announcements', []);
+  anns.push({ id: Date.now(), title, body, date: new Date().toISOString().split('T')[0] });
+  setStore('announcements', anns);
+  alert('Announcement posted successfully!');
+  renderAnnouncementsAdmin(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+initData();
+
+// Enter key on login
+document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+</script>
+
+<!-- Curriculum module — US-06 & US-07 (Omar Tamer, Scrum Master) -->
+<script src="js/courses.js"></script>
+
+</body>
+</html>
